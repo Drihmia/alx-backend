@@ -33,35 +33,54 @@ class Server:
         """
         if self.__indexed_dataset is None:
             dataset = self.dataset()
-            truncated_dataset = dataset[:1000]
             self.__indexed_dataset = {
                 i: dataset[i] for i in range(len(dataset))
             }
         return self.__indexed_dataset
 
     def get_hyper_index(self, index: int = None, page_size: int = 10) -> Dict:
+
+        if not all([isinstance(index, int), isinstance(page_size, int)]):
+            raise AssertionError(f"{index} or {page_size} is not a integer")
+
+        if not all([index >= 0, page_size > 0]):
+            raise AssertionError(
+                f"{index} or {page_size} is not greater than 0")
+
         indexed_dataset = self.indexed_dataset()
+
+        if indexed_dataset is None or not len(indexed_dataset):
+            return {
+                "index": index,
+                "page_size": page_size,
+                "next_index": None,
+                "data": []
+            }
 
         largest_index = sorted(indexed_dataset.keys())[-1]
         if index >= largest_index:
             raise AssertionError(f"{index} not a valid index")
 
-        data = []
         next_index = None
-        a = 0
-        for i in range(index, index + page_size):
-            idx = i + a
+        data = []
+        offset = 0
+        for pos in range(index, index + page_size):
+            idx = offset + pos
             if idx not in indexed_dataset:
-                if idx >= largest_index:
-                    break
 
+                # moving the offset until we find next idx.
                 while True:
-                    idx = a + i
+                    idx = offset + pos
+
                     if idx in indexed_dataset:
                         break
-                    a += 1
-            next_index = idx + 1
+
+                    if idx >= largest_index:
+                        break
+                    offset += 1
+
             data.append(indexed_dataset[idx])
+            next_index = idx + 1
 
         # print(f"largest_index: {largest_index}")
         # print(f"length: {len(indexed_dataset)}")
