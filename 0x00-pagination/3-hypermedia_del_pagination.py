@@ -5,7 +5,7 @@ Deletion-resilient hypermedia pagination
 
 import csv
 import math
-from typing import List, Dict
+from typing import List, Dict, Union
 
 
 class Server:
@@ -38,7 +38,8 @@ class Server:
             }
         return self.__indexed_dataset
 
-    def get_hyper_index(self, index: int = None, page_size: int = 10) -> Dict:
+    def get_hyper_index(self, index: int = None, page_size: int = 10) -> Dict[
+            str, Union[int, List[List], None]]:
 
         if not all([isinstance(index, int), isinstance(page_size, int)]):
             raise AssertionError(f"{index} or {page_size} is not a integer")
