@@ -33,7 +33,7 @@ class FIFOCache(BaseCaching):
             del self.cache_data[discarded_key]
             self.__qeue.pop(0)
 
-            print(f"DISCARD {discarded_key}")
+            print(f"DISCARD: {discarded_key}")
 
         self.cache_data.update({key: item})
 
