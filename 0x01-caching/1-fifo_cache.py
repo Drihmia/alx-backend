@@ -2,8 +2,8 @@
 """
 This module implements a FIFO cache.
 """
-from base_caching import BaseCaching
 from typing import Any
+from base_caching import BaseCaching
 
 
 class FIFOCache(BaseCaching):
@@ -15,16 +15,16 @@ class FIFOCache(BaseCaching):
 
         self.__qeue = []
 
-    def put(self, key: Any, item: Any) -> None:
+    def put(self, key, item: Any) -> None:
         """A method that adds an item to the cache
         """
 
         if None in (key, item):
             return
 
-        if key not in self.__qeue:
-            self.__qeue.append(key)
-        # print(self.__qeue)
+        if key in self.__qeue:
+            self.__qeue.pop(self.__qeue.index(key))
+        self.__qeue.append(key)
 
         if (len(self.cache_data.keys()) >= self.MAX_ITEMS and
                 key not in self.cache_data):
@@ -37,7 +37,7 @@ class FIFOCache(BaseCaching):
 
         self.cache_data.update({key: item})
 
-    def get(self, key: Any) -> Any:
+    def get(self, key):
         """ A method that gets an item from the cache
         """
 
