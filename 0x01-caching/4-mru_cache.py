@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-This module implements a LRU cache.
+This module implements a MRU cache.
 """
 from typing import Any
 from base_caching import BaseCaching
 
 
-class LRUCache(BaseCaching):
-    """ A class that is a caching system using LRU
+class MRUCache(BaseCaching):
+    """ A class that is a caching system using MRU
     """
 
     def __init__(self):
@@ -29,9 +29,9 @@ class LRUCache(BaseCaching):
         if (len(self.cache_data.keys()) >= self.MAX_ITEMS and
                 key not in self.cache_data):
 
-            discarded_key = self.__qeue[0]
+            discarded_key = self.__qeue[-2]
             del self.cache_data[discarded_key]
-            self.__qeue.pop(0)
+            self.__qeue.pop(-2)
 
             print(f"DISCARD: {discarded_key}")
 
