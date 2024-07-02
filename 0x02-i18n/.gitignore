@@ -1,0 +1,4 @@
+*.pyc
+*nvim*
+*.txt
+*dock*
