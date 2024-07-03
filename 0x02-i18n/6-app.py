@@ -68,6 +68,7 @@ app_views = Blueprint('app_views', __name__, url_prefix='/')
 # @app_views.before_request
 @app_views.route('/', strict_slashes=False)
 def home() -> str:
+    """ Home route """
     return render_template('6-index.html')
 
 
