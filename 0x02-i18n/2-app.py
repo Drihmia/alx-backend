@@ -6,9 +6,10 @@ from flask_babel import Babel
 app = Flask(__name__)
 
 
+# @babel.locale_selector
 def get_locale():
-    # return request.accept_languages.best_match(app.config['LANGUAGES'])
-    return "fr"
+    """ Get locale from request """
+    return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
 class Config:
@@ -25,6 +26,7 @@ app_views = Blueprint('app_views', __name__, url_prefix='/')
 
 @app_views.route('/', strict_slashes=False)
 def home():
+    """ Home page """
     return render_template('2-index.html'), 200
 
 
