@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """ This module contains basic Flask app setup """
+from datetime import datetime
 from flask import Flask, Blueprint, render_template, request, g
 from flask_babel import Babel
-from typing import Dict, Union, Tuple
+from typing import Union, Dict, Tuple
+import pytz
 
 
 users = {
@@ -53,6 +55,42 @@ def get_user() -> Union[Dict[str, str],  None]:
     return None
 
 
+# @babel.timezoneselector
+def get_timezone() -> str:
+    """ Get timezone from request """
+    args = request.args
+    if "timezone" in args:
+        timezone = args.get('timezone')
+        try:
+            pytz.timezone(timezone if timezone else '')
+            return str(timezone)
+        except pytz.exceptions.UnknownTimeZoneError:
+            pass
+
+    if "login_as" in args:
+        user_id = args.get("login_as")
+        if user_id and user_id.isnumeric():
+            user_obj = users.get(int(user_id))
+            if user_obj and isinstance(user_obj, dict):
+                timezone = user_obj.get('timezone')
+                try:
+                    pytz.timezone(timezone if timezone else '')
+                    return str(timezone)
+                except pytz.exceptions.UnknownTimeZoneError:
+                    pass
+
+    headers = request.headers
+
+    if "timezone" in headers:
+        timezone = headers.get('timezone', 'UTC')
+        try:
+            pytz.timezone(timezone if timezone else '')
+            return str(timezone)
+        except pytz.exceptions.UnknownTimeZoneError:
+            pass
+    return str(pytz.utc)
+
+
 class Config:
     LANGUAGES = ["en", "fr"]
     BABEL_DEFAULT_LOCALE = "en"
@@ -67,7 +105,10 @@ app_views = Blueprint('app_views', __name__, url_prefix='/')
 # @app_views.before_request
 @app_views.route('/', strict_slashes=False)
 def home() -> Tuple[str, int]:
-    return render_template('6-index.html'), 200
+    timezone_str = get_timezone()
+    tz = pytz.timezone(timezone_str)
+    current_time = datetime.now(tz)
+    return render_template('index.html', current_time=current_time), 200
 
 
 @app.before_request

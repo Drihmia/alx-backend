@@ -55,14 +55,14 @@ def get_user() -> Union[Dict[str, str],  None]:
 
 
 # @babel.timezoneselector
-def get_timezone():
+def get_timezone() -> str:
     """ Get timezone from request """
     args = request.args
     if "timezone" in args:
         timezone = args.get('timezone')
         try:
             pytz.timezone(timezone if timezone else '')
-            return timezone
+            return str(timezone)
         except pytz.exceptions.UnknownTimeZoneError:
             pass
 
@@ -74,7 +74,7 @@ def get_timezone():
                 timezone = user_obj.get('timezone')
                 try:
                     pytz.timezone(timezone if timezone else '')
-                    return timezone
+                    return str(timezone)
                 except pytz.exceptions.UnknownTimeZoneError:
                     pass
 
@@ -84,9 +84,10 @@ def get_timezone():
         timezone = headers.get('timezone')
         try:
             pytz.timezone(timezone if timezone else '')
-            return timezone
+            return str(timezone)
         except pytz.exceptions.UnknownTimeZoneError:
             pass
+    return str(pytz.utc)
 
 
 class Config:
@@ -103,7 +104,7 @@ app_views = Blueprint('app_views', __name__, url_prefix='/')
 # @app_views.before_request
 @app_views.route('/', strict_slashes=False)
 def home() -> Tuple[str, int]:
-    return render_template('5-index.html'), 200
+    return render_template('7-index.html'), 200
 
 
 @app.before_request
