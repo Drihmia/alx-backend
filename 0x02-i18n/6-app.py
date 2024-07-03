@@ -2,7 +2,7 @@
 """ This module contains basic Flask app setup """
 from flask import Flask, Blueprint, render_template, request, g
 from flask_babel import Babel
-from typing import Dict, Union, Tuple
+from typing import Dict, Union
 
 
 users = {
@@ -21,7 +21,7 @@ babel = Babel(app)
 def get_locale() -> str:
     """ Get locale from request """
     args = request.args
-    if "locale" in args:
+    if "locale" in args and isinstance(args, dict):
         locale = args.get('locale')
         if locale and locale in app.config['LANGUAGES']:
             return locale
@@ -34,7 +34,7 @@ def get_locale() -> str:
 
     headers = request.headers
 
-    if "locale" in headers:
+    if "locale" in headers and isinstance(headers, dict):
         locale = headers.get('locale')
         if locale and locale in app.config['LANGUAGES']:
             return locale
@@ -45,7 +45,7 @@ def get_locale() -> str:
 def get_user() -> Union[Dict[str, str],  None]:
     """ Get user from request """
     args = request.args
-    if "login_as" in args:
+    if "login_as" in args and isinstance(args, dict):
         user_id = args.get("login_as")
         if user_id and user_id.isnumeric():
             obj = users.get(int(user_id))
@@ -55,6 +55,7 @@ def get_user() -> Union[Dict[str, str],  None]:
 
 
 class Config:
+    """ Config class """
     LANGUAGES = ["en", "fr"]
     BABEL_DEFAULT_LOCALE = "en"
     BABEL_DEFAULT_TIMEZONE = "UTC"
@@ -66,8 +67,8 @@ app_views = Blueprint('app_views', __name__, url_prefix='/')
 
 # @app_views.before_request
 @app_views.route('/', strict_slashes=False)
-def home() -> Tuple[str, int]:
-    return render_template('6-index.html'), 200
+def home() -> str:
+    return render_template('6-index.html')
 
 
 @app.before_request
