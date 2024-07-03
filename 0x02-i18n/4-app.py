@@ -6,15 +6,6 @@ from flask_babel import Babel
 app = Flask(__name__)
 
 
-# @babel.locale_selector
-def get_locale():
-    """ Get locale from request """
-    args = request.args
-    if "locale" in args and args.get('locale') in app.config['LANGUAGES']:
-        return args.get('locale')
-    return request.accept_languages.best_match(app.config['LANGUAGES'])
-
-
 class Config:
     LANGUAGES = ["en", "fr"]
     BABEL_DEFAULT_LOCALE = "en"
@@ -22,7 +13,20 @@ class Config:
 
 
 app.config.from_object(Config)
-babel = Babel(app, locale_selector=get_locale)
+babel = Babel(app)
+
+
+@babel.locale_selector
+def get_locale():
+    """ Get locale from request """
+    args = request.args
+    if "locale" in args:
+        locale = args.get('locale')
+        if locale in app.config['LANGUAGES']:
+            return locale
+
+    return request.accept_languages.best_match(app.config['LANGUAGES'])
+
 
 app_views = Blueprint('app_views', __name__, url_prefix='/')
 
