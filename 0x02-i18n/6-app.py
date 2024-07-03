@@ -14,9 +14,10 @@ users = {
 
 
 app = Flask(__name__)
+babel = Babel(app)
 
 
-# @babel.locale_selector
+@babel.localeselector
 def get_locale() -> str:
     """ Get locale from request """
     args = request.args
@@ -60,7 +61,6 @@ class Config:
 
 
 app.config.from_object(Config)
-babel = Babel(app, locale_selector=get_locale)
 
 app_views = Blueprint('app_views', __name__, url_prefix='/')
 
