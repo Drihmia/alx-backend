@@ -7,17 +7,6 @@ from typing import Tuple
 app = Flask(__name__)
 bebel = Babel(app)
 
-app_views = Blueprint('app_views', __name__, url_prefix='/')
-
-
-@app_views.route('/', strict_slashes=False)
-def home() -> Tuple[str, int]:
-    """ Home page """
-    return render_template('1-index.html'), 200
-
-
-app.register_blueprint(app_views)
-
 
 class Config:
     LANGUAGES = ["en", "fr"]
@@ -26,6 +15,12 @@ class Config:
 
 
 app.config.from_object(Config)
+
+
+@app.route('/', strict_slashes=False)
+def home() -> Tuple[str, int]:
+    """ Home page """
+    return render_template('1-index.html'), 200
 
 
 if __name__ == "__main__":
