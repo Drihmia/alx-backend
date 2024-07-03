@@ -79,4 +79,4 @@ app.register_blueprint(app_views)
 # app.before_request(before_request)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
