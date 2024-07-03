@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """ This module contains basic Flask app setup """
-from flask import Flask, Blueprint, render_template
+from flask import Flask, render_template
 from flask_babel import Babel
 
 app = Flask(__name__)
-bebel = Babel(app)
 
 
 class Config:
@@ -15,9 +14,10 @@ class Config:
 
 
 app.config.from_object(Config)
+bebel = Babel(app)
 
 
-@app.route('/', strict_slashes=False)
+@app.route('/')
 def home() -> str:
     """ Home page """
     return render_template('1-index.html')
