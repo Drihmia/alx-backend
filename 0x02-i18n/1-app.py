@@ -14,7 +14,7 @@ class Config:
 
 
 app.config.from_object(Config)
-bebel = Babel(app)
+babel = Babel(app)
 
 
 @app.route('/')
